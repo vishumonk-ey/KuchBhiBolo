@@ -107,7 +107,7 @@ function Header() {
           eachNavItem.status ? (
             <li key={eachNavItem.slug} className="mx-auto">
               <NavLink to={eachNavItem.slug}>
-                <Button>{eachNavItem.name}</Button>
+                <Button onClick={()=>setIsMenuOpen(!isMenuOpen)}>{eachNavItem.name}</Button>
               </NavLink>
             </li>
           ) : null
