@@ -8,6 +8,8 @@ function RTE({
   label,
   defaultValue = "Write Something here....",
 }) {
+  // console.log("my content :",defaultValue);
+  
   return (
     <div className="w-full">
       {label && <label className="inline-block mb-1 ">{label}</label>}

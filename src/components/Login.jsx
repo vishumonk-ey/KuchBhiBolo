@@ -64,6 +64,7 @@ function Login() {
               <Input
                 placeholder="Email"
                 label="Email : "
+                autocomplete="off"
                 {...register("email", {
                   required: true,
                   // validate ---> yaha pattern matching karva dena last me ..
@@ -78,6 +79,7 @@ function Login() {
               <Input
                 placeholder="Password"
                 label="Password : "
+                autocomplete="off"
                 {...register("password", {
                   required: true,
                   // validate :
