@@ -9,62 +9,72 @@ import { addPosts, deletePost, updatePosts } from "../../store/postSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 function Postform({ post }) {
-  console.log("post:", post);
-
   const { register, handleSubmit, watch, control, setValue, getValues } =
     useForm({
       defaultValues: {
         title: post?.title || "",
-        content: post?.content || "Write your text here...",
+        content: post?.content,
         imageId: post?.imageId || "",
         slug: post?.$id || "",
       },
     });
   const navigate = useNavigate();
-  console.log(useSelector((state) => state));
   const storedPosts = useSelector((state) => state.posts.allPosts);
   const userData = useSelector((state) => state.auth.userData);
   const dispatch = useDispatch();
   // const [slug, setSlug] = useState("");
-  console.log("my content is : " , getValues("content"));
-  
   const submit = async (data) => {
-    // console.log(data);
-    // console.log("my data : ", data);
-
     if (post) {
       const newImage = data.image[0]
         ? await databaseService.uploadFile(data.image[0])
         : null;
       if (newImage) {
         await databaseService.deleteFile(post.imageId);
-        //  const updatedPost = await databaseService.updatePost({
-        //      ...data,
-        //      imageId: newImage.$id } , post.$id
-        //     );
+        // const updatedPost = await databaseService.updatePost(
+        //   {
+        //     ...data,
+        //     imageId: newImage.$id,
+        //   },
+        //   post.$id
+        // );
+        // if (updatedPost) {
+        //   navigate("/posts/${updatedPost.$id}");
+        // } else {
+        //   navigate("/");
+        // }
         // slug isnt changing so deleting the old and creating new with same data
       }
-      const deleteOldPost = await databaseService.deletePost(post.$id);
-      if (deleteOldPost) {
-        const newPost = await databaseService.createPost(
-          {
-            ...data,
-            imageId: newImage ? newImage.$id : data.imageId ,
-            authorId: userData.$id,
-          },
-          data.slug
-        );
-        if (newPost) {
-          // addPosts()
-          dispatch(
-            updatePosts({
-              slugForDelete: post.$id,
-              newPost,
-            })
-          );
-          navigate(`/posts/${newPost.$id}`);
-        }
+      const updatedPost = await databaseService.updatePost(
+        {
+          ...data,
+          imageId: newImage?.$id || data.imageId,
+        },
+        post.$id
+      );
+      if (updatedPost) {
+        navigate(`/posts/${updatedPost.$id}`);
+      } else {
+        navigate("/");
       }
+      // const deleteOldPost = await databaseService.deletePost(post.$id);
+      // if (deleteOldPost) {
+      //   const newPost = await databaseService.createPost(
+      //     {
+      //       ...data,
+      //       imageId: newImage.$id || data.imageId,
+      //       authorId: userData.$id,
+      //     },
+      //     data.slug
+      //   );
+      //   if (newPost) {
+      //     // addPosts()
+      //     dispatch(updatePosts({
+      //       slugForDelete : post.$id ,
+      //       newPost
+      //     }))
+      //     navigate(`/posts/${newPost.$id}`);
+      //   }
+      // }
     } else {
       const image = await databaseService.uploadFile(data.image[0]);
       const newPost = await databaseService.createPost(
@@ -75,6 +85,7 @@ function Postform({ post }) {
         },
         data.slug
       );
+
       if (newPost) {
         dispatch(addPosts([...storedPosts, newPost]));
         navigate(`/posts/${newPost.$id}`);
@@ -88,7 +99,6 @@ function Postform({ post }) {
       .replace(/[^\w\s-]/g, "") // Remove special characters except spaces and hyphens
       .replace(/[\s_]+/g, "-") // Replace spaces and underscores with hyphens
       .replace(/^-+|-+$/g, ""); // Remove leading and trailing hyphens
-    console.log(slug);
 
     return slug;
   }, []);
@@ -101,6 +111,7 @@ function Postform({ post }) {
     return () => subscription.unsubscribe();
   }, []);
   // my useEffect will run once when the component mounts , and it is continously watching until my component unmounts , we can only return a function in useEffect which will run when useEffect runs again or component unmounts.
+
   return (
     <Container>
       <form onSubmit={handleSubmit(submit)} className="flex flex-wrap">
@@ -113,7 +124,7 @@ function Postform({ post }) {
               required: true,
             })}
           />
-          <RTE control={control} defaultValue={getValues("content")}/>
+          <RTE control={control} defaultValue={getValues("content")} />
         </div>
         <div className="w-1/3 px-2 space">
           <Input
