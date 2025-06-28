@@ -18,7 +18,7 @@ function Post() {
       .getPost(slug)
       .then((resolvedPost) => {
         resolvedPost ? setPost((resolvedPost)) : navigate("/");
-        console.log("my Post :" ,resolvedPost);
+       // console.log("my Post :" ,resolvedPost);
         
         // authorId = post.authorId;
       })
