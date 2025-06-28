@@ -11,8 +11,7 @@ function Post() {
   const { slug } = useParams();
   const [post, setPost] = useState(null);
   const navigate = useNavigate();
-  // const allPosts = useSelector((state) => state.allPosts)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   // let authorId;
   useEffect(() => {
     databaseService
@@ -40,11 +39,15 @@ function Post() {
  }
   const handleDelete = async () => {
     try {
-      // console.log("post",post); 
       const status = await databaseService.deletePost(slug);
+      console.log("delete post status:",status);
+      
       if (status) {
+        
+        
         const fileDelStatus = await databaseService.deleteFile(post.imageId);
-        dispatch(deletePost(slug))
+        dispatch(deletePost(post.$id))
+        
         fileDelStatus && navigate("/");
       }
     } catch (error) {
