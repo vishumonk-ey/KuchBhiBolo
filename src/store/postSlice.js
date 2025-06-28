@@ -27,6 +27,8 @@ const postSlice = createSlice({
     deletePost : (state,action) => {
         // send slug of the post to delete
         const slug = action.payload
+        console.log(slug);
+          
         const updatedPosts = state.allPosts.filter((eachPost)=>(
             eachPost.$id !== slug
         ))
